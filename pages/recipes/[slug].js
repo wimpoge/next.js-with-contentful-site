@@ -25,11 +25,20 @@ export const getStaticPaths = async () => {
   }
 }
 
-export const getStaticProps = async ({ params }) => {
+export async function getStaticProps ({ params }) {
   const { items } = await client.getEntries({
     content_type: 'recipe',
     'fields.slug': params.slug
   })
+
+  if(!items.length) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
 
   return {
     props: { recipe: items[0] },
